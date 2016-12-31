@@ -667,16 +667,10 @@ public void Multi1v1_OnRoundWon(int winner, int loser)
 	}
 	else
 	{
-		if (ga_iCooldown[winner] > 0)
-		{
-			ga_iCooldown[winner]--;
-		}
-
-		if (ga_iCooldown[loser] > 0)
-		{
-			ga_iCooldown[loser]--;
-		}
+		ga_iCooldown[winner]--;
+		ga_iCooldown[loser]--;
 	}
+	
 }
 
 public void Multi1v1_AfterPlayerSetup(int client)
@@ -707,7 +701,7 @@ public void Multi1v1_OnPostArenaRankingsSet(ArrayList rankingQueue)
 		for (int i = 0; i < rankingQueue.Length; i++)
 		{
 			client = rankingQueue.Get(i);
-			if (ga_iCooldown[client] == (gcv_iCooldown.IntValue - 1) && !ga_bIsInChallenge[client] && !isInChallengeQueue(client)) // if they had a challenge last round
+			if (wasLastRoundAChallenge(client)) // if they had a challenge last round
 			{			
 				if (oldIndex < rankingQueue.Length) // if we should bother shifting people
 				{
@@ -755,6 +749,19 @@ public void Multi1v1_OnPostArenaRankingsSet(ArrayList rankingQueue)
 	}
 }
 
+// DESCRIPTION: Returns if the player was in a challenge last round
+bool wasLastRoundAChallenge(int client)
+{
+	if(ga_iCooldown[client] == (gcv_iCooldown.IntValue - 1))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 // DESCRIPTION: Places two clients into the challengeQueue 
 void placeInChallengeQueue(int client1, int client2)
 {
@@ -776,10 +783,11 @@ void removeAllQueuedPlayers(ArrayList array)
 		
 		while (index != -1)
 		{
+			ga_iOldArena[client] = index;
+
 			array.Erase(index);
 			
 			index = array.FindValue(client);
-			ga_iOldArena[client] = index;
 		}
 	}
 
