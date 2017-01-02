@@ -27,8 +27,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION "1.0.0"
-//#define DEBUG
+#define PLUGIN_VERSION "1.0.1"
+#define DEBUG
 
 /* Handles */
 Handle g_hOnRankingQueueBuilt = null;
@@ -192,6 +192,7 @@ public void OnPluginStart()
 	LoadTranslations("common.phrases.txt");
 
 	/* Commands */
+	
 	RegConsoleCmd("sm_challenge", Command_Challenge, "Allows users to challenge their friends!");
 	RegConsoleCmd("sm_chal", Command_Challenge, "Allows users to challenge their friends!");
 	
@@ -287,8 +288,7 @@ public Action Event_PlayerDisconnect(Event hEvent, const char[] sName, bool bDon
 
 /******************************************************************
 ************************ USER INPUT *******************************
-******************************************************************/
-
+*******************************************************************/
 
 
 public Action Command_Challenge(int client, int args)
@@ -649,28 +649,27 @@ public void Multi1v1_OnRoundWon(int winner, int loser)
 			Store_SetClientCredits(loser, Store_GetClientCredits(loser) - betAmmount);
 			Store_SetClientCredits(winner, Store_GetClientCredits(winner) + betAmmount);
 		}
-
 		ga_bIsInChallenge[winner] = false;
 		ga_iBetAmmount[winner] = 0;
 		ga_iCooldown[winner] = gcv_iCooldown.IntValue + 1;
 		Multi1v1_UnblockMVPStars(winner);
 		Multi1v1_UnblockRatingChanges(winner);
 
-		
+
 		ga_bIsInChallenge[loser] = false;
 		ga_iBetAmmount[loser] = 0;
 		ga_iCooldown[loser] = gcv_iCooldown.IntValue + 1;
-		Multi1v1_UnblockMVPStars(winner);
-		Multi1v1_UnblockRatingChanges(winner);
+		Multi1v1_UnblockMVPStars(loser);
+		Multi1v1_UnblockRatingChanges(loser);
 
 		onChallengeWon(winner, loser);
+
 	}
 	else
 	{
 		ga_iCooldown[winner]--;
 		ga_iCooldown[loser]--;
 	}
-	
 }
 
 public void Multi1v1_AfterPlayerSetup(int client)
@@ -697,23 +696,22 @@ public void Multi1v1_OnPostArenaRankingsSet(ArrayList rankingQueue)
 	if (gcv_bSaveOldArena.BoolValue)
 	{
 		int client;
-		int oldIndex;
 		for (int i = 0; i < rankingQueue.Length; i++)
-		{
+		{			
 			client = rankingQueue.Get(i);
+			
 			if (wasLastRoundAChallenge(client)) // if they had a challenge last round
-			{			
-				if (oldIndex < rankingQueue.Length) // if we should bother shifting people
+			{		
+				if (ga_iOldArena[client] < rankingQueue.Length - 1) // if we should bother shifting people
 				{
 					removeFromQueue(rankingQueue, client); // remove them from the ranking queue
 					
-					oldIndex = ga_iOldArena[client]; // get their old index
-					rankingQueue.ShiftUp(oldIndex); // shift array up from said index
-				
-					rankingQueue.Set(oldIndex, client); // set the client back where they were
+					rankingQueue.ShiftUp(ga_iOldArena[client]); // shift array up from said index
+
+					rankingQueue.Set(ga_iOldArena[client], client); // set the client back where they were
 				}
+				ga_iOldArena[client] = 0;
 			}
-			ga_iOldArena[client] = 0;
 		}
 	}
 	
@@ -749,10 +747,10 @@ public void Multi1v1_OnPostArenaRankingsSet(ArrayList rankingQueue)
 	}
 }
 
-// DESCRIPTION: Returns if the player was in a challenge last round
+
 bool wasLastRoundAChallenge(int client)
 {
-	if(ga_iCooldown[client] == (gcv_iCooldown.IntValue - 1))
+	if(ga_iCooldown[client] == gcv_iCooldown.IntValue)
 	{
 		return true;
 	}
