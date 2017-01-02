@@ -28,7 +28,7 @@
 #pragma newdecls required
 
 #define PLUGIN_VERSION "1.0.1"
-#define DEBUG
+//#define DEBUG
 
 /* Handles */
 Handle g_hOnRankingQueueBuilt = null;
