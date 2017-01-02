@@ -43,6 +43,7 @@ ConVar gcv_iCooldown = null;
 ConVar gcv_iBetMultiplier = null;
 ConVar gcv_bBlockRatingChanges = null;
 ConVar gcv_bSaveOldArena = null;
+ConVar gcv_iRequestCooldown = null;
 
 /* Booleans */
 bool ga_bIsInChallenge[MAXPLAYERS + 1] = {false, ...};
@@ -53,6 +54,7 @@ bool g_bZephrusStore = false;
 int ga_iCooldown[MAXPLAYERS + 1] = {0, ...};
 int ga_iBetAmmount[MAXPLAYERS + 1] = {0, ...};
 int ga_iOldArena[MAXPLAYERS + 1] = {0, ...};
+int ga_iLastRequest[MAXPLAYERS + 1] = {0, ...};
 
 public Plugin myinfo =
 {
@@ -212,6 +214,7 @@ public void OnPluginStart()
 	gcv_bBlockRatingChanges = AutoExecConfig_CreateConVar("hl_challenge_ratingchanges", "1", "Determines if challenge outcomes affect Multi-1v1 ratings\nSet 1 to allow rating changes", _, true, 0.0, true, 1.0);
 	gcv_bSaveOldArena = AutoExecConfig_CreateConVar("hl_challenge_saveoldarenas", "1", "When a player joins a challenge, their old arena is saved so\nthey will be placed back when the round ends", _, true, 0.0, true, 1.0);
 	gcv_iBetMultiplier = AutoExecConfig_CreateConVar("hl_challenge_betmultiplier", "15", "Determines the multiplicity by which the bet ammount is generated", _, true, 5.0);
+	gcv_iRequestCooldown = AutoExecConfig_CreateConVar("hl_challenge_requestcooldown", "30", "Sets the time cooldown a player must wait inbetween requests (seconds)", _, true, 5.0);
 	
 	AutoExecConfig_ExecuteFile();
 	AutoExecConfig_CleanFile();
@@ -295,30 +298,35 @@ public Action Command_Challenge(int client, int args)
 {
 	if (!IsValidClient(client, true))
 	{
-		ReplyToCommand(client, "[SM] You must be in-game to use this command!");
+		Multi1v1_Message(client, "You must be in-game to use this command!");
 		return Plugin_Handled;
 	}
 	if (ga_bIsInChallenge[client])
 	{
-		ReplyToCommand(client, "[SM] You are already in a challenge!");
+		Multi1v1_Message(client, "You are already in a challenge!");
 		return Plugin_Handled;
 	}
 	if (isInChallengeQueue(client))
 	{
-		ReplyToCommand(client, "[SM] You are already in a queue for a challenge!");
+		Multi1v1_Message(client, "You are already in a queue for a challenge!");
 		return Plugin_Handled;
 	}
 	if (ga_iCooldown[client] > 0)
 	{
-		ReplyToCommand(client, "[SM] You must wait %i more rounds to challenge again!", ga_iCooldown[client]);
+		Multi1v1_Message(client, "You must wait %i more rounds to challenge again!", ga_iCooldown[client]);
 		return Plugin_Handled;
 	}
 	if (!gcv_bPluginEnabled.BoolValue)
 	{
-		ReplyToCommand(client, "This plugin is currently disabled!");
+		Multi1v1_Message(client, "This plugin is currently disabled!");
 		return Plugin_Handled;
 	}
-	
+	if ((ga_iLastRequest[client] + gcv_iRequestCooldown.IntValue) > GetTime())
+	{
+		Multi1v1_Message(client, "You must wait %i more seconds to challenge again!", (ga_iLastRequest[client] + gcv_iRequestCooldown.IntValue) - GetTime());
+		return Plugin_Handled;
+
+	}
 	if (args == 1)
 	{
 		char sArg1[MAX_TARGET_LENGTH];
@@ -332,7 +340,7 @@ public Action Command_Challenge(int client, int args)
 			}
 			else
 			{
-				ReplyToCommand(client, "[SM] You cannot target yourself!");
+				Multi1v1_Message(client, "You cannot target yourself!");
 			}
 		}
 	}
@@ -342,7 +350,7 @@ public Action Command_Challenge(int client, int args)
 	}
 	else
 	{
-		ReplyToCommand(client, "[SM] Usage : sm_challenge");
+		Multi1v1_Message(client, "Usage: sm_challenge");
 		return Plugin_Handled;
 	}
 	return Plugin_Handled;
@@ -390,33 +398,33 @@ public int MainMenu_CallBack(Menu MainMenu, MenuAction action, int param1, int p
 			
 			if (ga_bIsInChallenge[target])
 			{
-				ReplyToCommand(param1, "[SM] They are already in a challenge!");
+				Multi1v1_Message(param1, "They are already in a challenge!");
 				return;
 			}
 			if (isInChallengeQueue(target))
 			{
-				ReplyToCommand(param1, "[SM] They are already in a queue for a challenge!");
+				Multi1v1_Message(param1, "They are already in a queue for a challenge!");
 				return;
 			}
 			if (ga_iCooldown[target] > 0)
 			{
-				ReplyToCommand(param1, "[SM] They must wait %i more rounds to challenge again!", ga_iCooldown[target]);
+				Multi1v1_Message(param1, "They must wait %i more rounds to challenge again!", ga_iCooldown[target]);
 				return;
 			}
 
 			if (ga_bIsInChallenge[param1])
 			{
-				ReplyToCommand(param1, "[SM] You are already in a challenge!");
+				Multi1v1_Message(param1, "You are already in a challenge!");
 				return;
 			}
 			if (isInChallengeQueue(param1))
 			{
-				ReplyToCommand(param1, "[SM] You are already in a queue for a challenge!");
+				Multi1v1_Message(param1, "You are already in a queue for a challenge!");
 				return;
 			}
 			if (ga_iCooldown[param1] > 0)
 			{
-				ReplyToCommand(param1, "[SM] You must wait %i more rounds to challenge again!", ga_iCooldown[param1]);
+				Multi1v1_Message(param1, "You must wait %i more rounds to challenge again!", ga_iCooldown[param1]);
 				return;
 			}
 
@@ -475,40 +483,40 @@ public int CreditMenu_Callback(Menu MainMenu, MenuAction action, int param1, int
 			if (!isValidBetAmmount(param1, target, credits))
 			{
 				OpenBetSelectionMenu(param1, target);
-				ReplyToCommand(param1, "[SM] You or your target do not have sufficent credits!");
+				Multi1v1_Message(param1, "You or your target do not have sufficent credits!");
 				return;
 			}
 			
 			if (ga_bIsInChallenge[target])
 			{
-				ReplyToCommand(param1, "[SM] They are already in a challenge!");
+				Multi1v1_Message(param1, "They are already in a challenge!");
 				return;
 			}
 			if (isInChallengeQueue(target))
 			{
-				ReplyToCommand(param1, "[SM] They are already in a queue for a challenge!");
+				Multi1v1_Message(param1, "They are already in a queue for a challenge!");
 				return;
 			}
 			if (ga_iCooldown[target] > 0)
 			{
-				ReplyToCommand(param1, "[SM] They must wait %i more rounds to challenge again!", ga_iCooldown[target]);
+				Multi1v1_Message(param1, "They must wait %i more rounds to challenge again!", ga_iCooldown[target]);
 				return;
 			}
 
 			
 			if (ga_bIsInChallenge[param1])
 			{
-				ReplyToCommand(param1, "[SM] You are already in a challenge!");
+				Multi1v1_Message(param1, "You are already in a challenge!");
 				return;
 			}
 			if (isInChallengeQueue(param1))
 			{
-				ReplyToCommand(param1, "[SM] You are already in a queue for a challenge!");
+				Multi1v1_Message(param1, "You are already in a queue for a challenge!");
 				return;
 			}
 			if (ga_iCooldown[param1] > 0)
 			{
-				ReplyToCommand(param1, "[SM] You must wait %i more rounds to challenge again!", ga_iCooldown[param1]);
+				Multi1v1_Message(param1, "You must wait %i more rounds to challenge again!", ga_iCooldown[param1]);
 				return;
 			}
 				
@@ -533,6 +541,7 @@ void OpenRequestMenu(int reciever, int sender, int betAmmount)
 		Multi1v1_MessageToAll("\x03%N\x01 has challenged \x03%N\x01!", sender, reciever);
 	}
 	
+	ga_iLastRequest[sender] = GetTime();
 
 	char sInfoBuffer[128], sTitle[128];
 	
@@ -570,34 +579,34 @@ public int RequestMenu_CallBack(Menu MainMenu, MenuAction action, int param1, in
 			{
 				if (ga_bIsInChallenge[sender])
 				{
-					ReplyToCommand(param1, "[SM] They are already in a challenge!");
+					Multi1v1_Message(param1, "They are already in a challenge!");
 					return;
 				}
 				if (isInChallengeQueue(sender))
 				{
-					ReplyToCommand(param1, "[SM] They are already in a queue for a challenge!");
+					Multi1v1_Message(param1, "They are already in a queue for a challenge!");
 					return;
 				}
 				if (ga_iCooldown[sender] > 0)
 				{
-					ReplyToCommand(param1, "[SM] They must wait %i more rounds to challenge again!", ga_iCooldown[sender]);
+					Multi1v1_Message(param1, "They must wait %i more rounds to challenge again!", ga_iCooldown[sender]);
 					return;
 				}
 
 				
 				if (ga_bIsInChallenge[param1])
 				{
-					ReplyToCommand(param1, "[SM] You are already in a challenge!");
+					Multi1v1_Message(param1, "You are already in a challenge!");
 					return;
 				}
 				if (isInChallengeQueue(param1))
 				{
-					ReplyToCommand(param1, "[SM] You are already in a queue for a challenge!");
+					Multi1v1_Message(param1, "You are already in a queue for a challenge!");
 					return;
 				}
 				if (ga_iCooldown[param1] > 0)
 				{
-					ReplyToCommand(param1, "[SM] You must wait %i more rounds to challenge again!", ga_iCooldown[param1]);
+					Multi1v1_Message(param1, "You must wait %i more rounds to challenge again!", ga_iCooldown[param1]);
 					return;
 				}
 
