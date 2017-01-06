@@ -28,7 +28,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION "1.0.2"
+#define PLUGIN_VERSION "1.1.0"
 //#define DEBUG
 
 /* Handles */
@@ -367,7 +367,7 @@ public void Multi1v1_GunsMenuCallback(Menu menu, MenuAction action, int param1, 
 		}
 		case MenuAction_End:
 		{
-			CloseHandle(menu);
+			delete menu;
 		}
 	}
 }
@@ -565,7 +565,7 @@ public int MainMenu_CallBack(Menu MainMenu, MenuAction action, int param1, int p
 		}
 		case MenuAction_End:
 		{
-			CloseHandle(MainMenu);
+			delete MainMenu;
 		}
 	}
 }
@@ -651,7 +651,7 @@ public int CreditMenu_Callback(Menu MainMenu, MenuAction action, int param1, int
 		}
 		case MenuAction_End:
 		{
-			CloseHandle(MainMenu);
+			delete MainMenu;
 		}
 	}
 }
@@ -753,7 +753,7 @@ public int RequestMenu_CallBack(Menu MainMenu, MenuAction action, int param1, in
 		}
 		case MenuAction_End:
 		{
-			CloseHandle(MainMenu);
+			delete MainMenu;
 		}
 	}
 }
