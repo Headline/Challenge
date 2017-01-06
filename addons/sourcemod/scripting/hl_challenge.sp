@@ -16,9 +16,10 @@
  */
  
 #include <sourcemod>
-#include <cstrike>
-#include <hl_challenge>
+#include <clientprefs>
 #include <autoexecconfig>
+#include <hl_challenge>
+#include <cstrike>
 #include <store>
 
 #define REQUIRE_PLUGIN
@@ -33,6 +34,7 @@
 /* Handles */
 Handle g_hOnRankingQueueBuilt = null;
 Handle g_hOnChallengeWon = null;
+Handle g_hClientCookie = null;
 
 /* ArrayLists :D */
 ArrayList challengeQueue;
@@ -44,8 +46,10 @@ ConVar gcv_iBetMultiplier = null;
 ConVar gcv_bBlockRatingChanges = null;
 ConVar gcv_bSaveOldArena = null;
 ConVar gcv_iRequestCooldown = null;
+ConVar gcv_bChallengePref = null;
 
 /* Booleans */
+bool ga_bChallengePref[MAXPLAYERS + 1] = {true, ...};
 bool ga_bIsInChallenge[MAXPLAYERS + 1] = {false, ...};
 bool g_bLateLoad;
 bool g_bZephrusStore = false;
@@ -194,7 +198,6 @@ public void OnPluginStart()
 	LoadTranslations("common.phrases.txt");
 
 	/* Commands */
-	
 	RegConsoleCmd("sm_challenge", Command_Challenge, "Allows users to challenge their friends!");
 	RegConsoleCmd("sm_chal", Command_Challenge, "Allows users to challenge their friends!");
 	
@@ -215,9 +218,13 @@ public void OnPluginStart()
 	gcv_bSaveOldArena = AutoExecConfig_CreateConVar("hl_challenge_saveoldarenas", "1", "When a player joins a challenge, their old arena is saved so\nthey will be placed back when the round ends", _, true, 0.0, true, 1.0);
 	gcv_iBetMultiplier = AutoExecConfig_CreateConVar("hl_challenge_betmultiplier", "15", "Determines the multiplicity by which the bet ammount is generated", _, true, 5.0);
 	gcv_iRequestCooldown = AutoExecConfig_CreateConVar("hl_challenge_requestcooldown", "30", "Sets the time cooldown a player must wait inbetween requests (seconds)", _, true, 5.0);
+	gcv_bChallengePref = AutoExecConfig_CreateConVar("hl_challenge_preference", "1", "Allows users to turn off challenges so they will not recieve or be able to send challenge requests", _, true, 0.0, true, 10.0);
 	
 	AutoExecConfig_ExecuteFile();
 	AutoExecConfig_CleanFile();
+
+	/* Cookies */
+	g_hClientCookie = RegClientCookie("multi1v1-challenge", "Cookie to client challenge preference", CookieAccess_Public);
 
 	/* Reset Client Vars */
 	if (g_bLateLoad)
@@ -226,11 +233,17 @@ public void OnPluginStart()
 		{
 			if (IsValidClient(i))
 			{
-				OnClientConnected(i); 
+				OnClientConnected(i);
+				
+				if (AreClientCookiesCached(i))
+				{
+					OnClientCookiesCached(i);
+				}
 			}
 		}
 	}
 }
+
 
 public void OnMapStart()
 {
@@ -239,14 +252,25 @@ public void OnMapStart()
 
 public void OnClientConnected(int client)
 {
+	ga_bChallengePref[client] = true;
 	ga_bIsInChallenge[client] = false;
 	ga_iCooldown[client] = 0;
 	ga_iBetAmmount[client] = 0;
 	ga_iOldArena[client] = 0;
 }
 
+public void OnClientCookiesCached(int client)
+{
+	if(gcv_bPluginEnabled.BoolValue && gcv_bChallengePref.BoolValue)
+	{
+		LoadCookies(client);
+	}
+}
+
 public void OnClientDisconnect(int client)
 {
+	SaveCookies(client);
+	ga_bChallengePref[client] = true;
 	ga_bIsInChallenge[client] = false;
 	ga_iCooldown[client] = 0;
 	ga_iBetAmmount[client] = 0;
@@ -294,6 +318,60 @@ public Action Event_PlayerDisconnect(Event hEvent, const char[] sName, bool bDon
 *******************************************************************/
 
 
+public void Multi1v1_OnGunsMenuCreated(int client, Menu menu)
+{
+	if (!gcv_bChallengePref.BoolValue)
+	{
+		return;
+	}
+	
+	if (ga_bChallengePref[client])
+	{
+		AddMenuItem(menu, "challenge", "Challenges: enabled");
+	}
+	else
+	{
+		AddMenuItem(menu, "challenge", "Challenges: disabled");
+	}
+}
+
+public void Multi1v1_GunsMenuCallback(Menu menu, MenuAction action, int param1, int param2)
+{
+	if (!gcv_bChallengePref.BoolValue)
+	{
+		return;
+	}
+	switch (action)
+	{
+		case MenuAction_Select:
+		{
+			char sInfo[128];
+			GetMenuItem(menu, param2, sInfo, sizeof(sInfo));
+			if (StrEqual(sInfo, "challenge"))
+			{
+				if (ga_bChallengePref[param1])
+				{
+					ga_bChallengePref[param1] = false;
+					SaveCookies(param1);
+					
+					Multi1v1_Message(param1, "You have successfully disabled challenges!");
+				}
+				else
+				{
+					ga_bChallengePref[param1] = true;
+					SaveCookies(param1);
+					Multi1v1_Message(param1, "You have successfully enabled challenges!");
+				}
+			}
+			Multi1v1_GiveWeaponsMenu(param1, GetMenuSelectionPosition());
+		}
+		case MenuAction_End:
+		{
+			CloseHandle(menu);
+		}
+	}
+}
+
 public Action Command_Challenge(int client, int args)
 {
 	if (!IsValidClient(client, true))
@@ -325,8 +403,16 @@ public Action Command_Challenge(int client, int args)
 	{
 		Multi1v1_Message(client, "You must wait %i more seconds to challenge again!", (ga_iLastRequest[client] + gcv_iRequestCooldown.IntValue) - GetTime());
 		return Plugin_Handled;
-
 	}
+	if (gcv_bChallengePref.BoolValue)
+	{
+		if (!ga_bChallengePref[client])
+		{
+			Multi1v1_Message(client, "You must first enable challenges in the guns menu!");
+			return Plugin_Handled;
+		}
+	}
+	
 	if (args == 1)
 	{
 		char sArg1[MAX_TARGET_LENGTH];
@@ -336,6 +422,30 @@ public Action Command_Challenge(int client, int args)
 		{
 			if (target != client)
 			{
+				if (ga_bIsInChallenge[target])
+				{
+					Multi1v1_Message(client, "They are already in a challenge!");
+					return Plugin_Handled;
+				}
+				if (isInChallengeQueue(target))
+				{
+					Multi1v1_Message(client, "They are already in a queue for a challenge!");
+					return Plugin_Handled;
+				}
+				if (ga_iCooldown[target] > 0)
+				{
+					Multi1v1_Message(client, "They must wait %i more rounds to challenge again!", ga_iCooldown[target]);
+					return Plugin_Handled;
+				}
+				if (gcv_bChallengePref.BoolValue)
+				{
+					if (!ga_bChallengePref[target])
+					{
+						Multi1v1_Message(client, "They must first enable challenges in the guns menu!");
+						return Plugin_Handled;
+					}
+				}
+
 				OpenRequestMenu(target, client, 0);
 			}
 			else
@@ -411,7 +521,15 @@ public int MainMenu_CallBack(Menu MainMenu, MenuAction action, int param1, int p
 				Multi1v1_Message(param1, "They must wait %i more rounds to challenge again!", ga_iCooldown[target]);
 				return;
 			}
-
+			if (gcv_bChallengePref.BoolValue)
+			{
+				if (!ga_bChallengePref[target])
+				{
+					Multi1v1_Message(param1, "They must first enable challenges in the guns menu!");
+					return;
+				}
+			}
+			
 			if (ga_bIsInChallenge[param1])
 			{
 				Multi1v1_Message(param1, "You are already in a challenge!");
@@ -426,6 +544,14 @@ public int MainMenu_CallBack(Menu MainMenu, MenuAction action, int param1, int p
 			{
 				Multi1v1_Message(param1, "You must wait %i more rounds to challenge again!", ga_iCooldown[param1]);
 				return;
+			}
+			if (gcv_bChallengePref.BoolValue)
+			{
+				if (!ga_bChallengePref[param1])
+				{
+					Multi1v1_Message(param1, "You must first enable challenges in the guns menu!");
+					return;
+				}
 			}
 
 			if (g_bZephrusStore)
@@ -913,5 +1039,24 @@ bool isValidBetAmmount(int player1, int player2, int betAmmount)
 	else
 	{
 		return true;
+	}
+}
+
+void SaveCookies(int client)
+{
+	if(gcv_bPluginEnabled.BoolValue && IsValidClient(client))
+	{
+		char playerPreference[8];
+		IntToString(view_as<int>(!ga_bChallengePref[client]), playerPreference, sizeof(playerPreference));
+		SetClientCookie(client, g_hClientCookie, playerPreference);
+	}
+}
+void LoadCookies(int client)
+{
+	if(gcv_bPluginEnabled.BoolValue && IsValidClient(client))
+	{
+		char playerPreference[8];
+		GetClientCookie(client, g_hClientCookie, playerPreference, sizeof(playerPreference));
+		ga_bChallengePref[client] = !view_as<bool>(StringToInt(playerPreference));
 	}
 }
