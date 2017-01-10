@@ -25,5 +25,5 @@ When I first started getting interested into SourceMod scripting I was in charge
 If you have any probems or suggestions please open a new issue! Please do not comment on commits or pull requests if you have a bug. Opening a new issue is the appropriate way to report one.
 
 ##Natives & Forwards:
-See wiki
+See wiki [here](https://github.com/Headline22/Challenge/wiki)
 
