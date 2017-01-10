@@ -13,7 +13,7 @@ customizable to a server owner's needs.
 - Edit cfg/sourcemod/hl_challenge.cfg to taste
 
 ##Commands:
- - sm_challenge <playername>
+ - sm_challenge playername
  - sm_challenge
 
 ##Problems & Requests:
