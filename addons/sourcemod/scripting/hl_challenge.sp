@@ -96,7 +96,7 @@ public int Native_IsInChallenge(Handle plugin, int iNumParams)
 	
 	if (!IsValidClient(client))
 	{
-      return ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index (%i)", client);
+		return ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index (%i)", client);
 	}
 	else
 	{
