@@ -28,7 +28,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION "1.1.0"
+#define PLUGIN_VERSION "1.1.1"
 //#define DEBUG
 
 /* Handles */
@@ -412,6 +412,11 @@ public Action Command_Challenge(int client, int args)
 			return Plugin_Handled;
 		}
 	}
+	if (GetClientTeam(client) == CS_TEAM_SPECTATOR)
+	{
+		Multi1v1_Message(client, "You may not challenge as a spectator!");
+		return Plugin_Handled;
+	}
 	
 	if (args == 1)
 	{
@@ -444,6 +449,11 @@ public Action Command_Challenge(int client, int args)
 						Multi1v1_Message(client, "They must first enable challenges in the guns menu!");
 						return Plugin_Handled;
 					}
+				}
+				if (GetClientTeam(target) == CS_TEAM_SPECTATOR)
+				{
+					Multi1v1_Message(target, "They may not challenge as a spectator!");
+					return Plugin_Handled;
 				}
 
 				OpenRequestMenu(target, client, 0);
@@ -529,6 +539,12 @@ public int MainMenu_CallBack(Menu MainMenu, MenuAction action, int param1, int p
 					return;
 				}
 			}
+			if (GetClientTeam(target) == CS_TEAM_SPECTATOR)
+			{
+				Multi1v1_Message(target, "They may not challenge as a spectator!");
+				return;
+			}
+
 			
 			if (ga_bIsInChallenge[param1])
 			{
@@ -552,6 +568,11 @@ public int MainMenu_CallBack(Menu MainMenu, MenuAction action, int param1, int p
 					Multi1v1_Message(param1, "You must first enable challenges in the guns menu!");
 					return;
 				}
+			}
+			if (GetClientTeam(param1) == CS_TEAM_SPECTATOR)
+			{
+				Multi1v1_Message(param1, "You may not challenge as a spectator!");
+				return;
 			}
 
 			if (g_bZephrusStore)
@@ -628,6 +649,11 @@ public int CreditMenu_Callback(Menu MainMenu, MenuAction action, int param1, int
 				Multi1v1_Message(param1, "They must wait %i more rounds to challenge again!", ga_iCooldown[target]);
 				return;
 			}
+			if (GetClientTeam(target) == CS_TEAM_SPECTATOR)
+			{
+				Multi1v1_Message(target, "They may not challenge as a spectator!");
+				return;
+			}
 
 			
 			if (ga_bIsInChallenge[param1])
@@ -645,7 +671,12 @@ public int CreditMenu_Callback(Menu MainMenu, MenuAction action, int param1, int
 				Multi1v1_Message(param1, "You must wait %i more rounds to challenge again!", ga_iCooldown[param1]);
 				return;
 			}
-				
+			if (GetClientTeam(param1) == CS_TEAM_SPECTATOR)
+			{
+				Multi1v1_Message(param1, "You may not challenge as a spectator!");
+				return;
+			}
+
 			OpenRequestMenu(target, param1, credits);
 			
 		}
@@ -718,6 +749,11 @@ public int RequestMenu_CallBack(Menu MainMenu, MenuAction action, int param1, in
 					Multi1v1_Message(param1, "They must wait %i more rounds to challenge again!", ga_iCooldown[sender]);
 					return;
 				}
+				if (GetClientTeam(sender) == CS_TEAM_SPECTATOR)
+				{
+					Multi1v1_Message(sender, "They may not challenge as a spectator!");
+					return;
+				}
 
 				
 				if (ga_bIsInChallenge[param1])
@@ -733,6 +769,11 @@ public int RequestMenu_CallBack(Menu MainMenu, MenuAction action, int param1, in
 				if (ga_iCooldown[param1] > 0)
 				{
 					Multi1v1_Message(param1, "You must wait %i more rounds to challenge again!", ga_iCooldown[param1]);
+					return;
+				}
+				if (GetClientTeam(param1) == CS_TEAM_SPECTATOR)
+				{
+					Multi1v1_Message(param1, "You may not challenge as a spectator!");
 					return;
 				}
 
