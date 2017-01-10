@@ -56,7 +56,7 @@ bool g_bZephrusStore = false;
 
 /* Integers */
 int ga_iCooldown[MAXPLAYERS + 1] = {0, ...};
-int ga_iBetAmmount[MAXPLAYERS + 1] = {0, ...};
+int ga_iBetAmount[MAXPLAYERS + 1] = {0, ...};
 int ga_iOldArena[MAXPLAYERS + 1] = {0, ...};
 int ga_iLastRequest[MAXPLAYERS + 1] = {0, ...};
 
@@ -213,12 +213,12 @@ public void OnPluginStart()
 	AutoExecConfig_CreateConVar("hl_challenge_version", PLUGIN_VERSION, "Headline's Challenge Plugin Version", FCVAR_DONTRECORD);
 
 	gcv_bPluginEnabled = AutoExecConfig_CreateConVar("hl_challenge_enabled", "1", "Determines whether or not the plugin is enabled", _, true, 0.0, true, 1.0);
-	gcv_iCooldown = AutoExecConfig_CreateConVar("hl_challenge_cooldown", "3", "Determines how many rounds the player must wait untill they can challenge again.\nSet 0 to disable", _, true, 0.0, true, 10.0);
+	gcv_iCooldown = AutoExecConfig_CreateConVar("hl_challenge_cooldown", "3", "Determines how many rounds the player must wait until they can challenge again.\nSet 0 to disable", _, true, 0.0, true, 10.0);
 	gcv_bBlockRatingChanges = AutoExecConfig_CreateConVar("hl_challenge_ratingchanges", "1", "Determines if challenge outcomes affect Multi-1v1 ratings\nSet 1 to allow rating changes", _, true, 0.0, true, 1.0);
 	gcv_bSaveOldArena = AutoExecConfig_CreateConVar("hl_challenge_saveoldarenas", "1", "When a player joins a challenge, their old arena is saved so\nthey will be placed back when the round ends", _, true, 0.0, true, 1.0);
-	gcv_iBetMultiplier = AutoExecConfig_CreateConVar("hl_challenge_betmultiplier", "15", "Determines the multiplicity by which the bet ammount is generated", _, true, 5.0);
-	gcv_iRequestCooldown = AutoExecConfig_CreateConVar("hl_challenge_requestcooldown", "30", "Sets the time cooldown a player must wait inbetween requests (seconds)", _, true, 5.0);
-	gcv_bChallengePref = AutoExecConfig_CreateConVar("hl_challenge_preference", "1", "Allows users to turn off challenges so they will not recieve or be able to send challenge requests", _, true, 0.0, true, 10.0);
+	gcv_iBetMultiplier = AutoExecConfig_CreateConVar("hl_challenge_betmultiplier", "15", "Determines the multiplicity by which the bet amount is generated", _, true, 5.0);
+	gcv_iRequestCooldown = AutoExecConfig_CreateConVar("hl_challenge_requestcooldown", "30", "Sets the time a player must wait in between requests (seconds)", _, true, 5.0);
+	gcv_bChallengePref = AutoExecConfig_CreateConVar("hl_challenge_preference", "1", "Allows users to turn off challenges so they will not receive or be able to send challenge requests", _, true, 0.0, true, 10.0);
 	
 	AutoExecConfig_ExecuteFile();
 	AutoExecConfig_CleanFile();
@@ -255,7 +255,7 @@ public void OnClientConnected(int client)
 	ga_bChallengePref[client] = true;
 	ga_bIsInChallenge[client] = false;
 	ga_iCooldown[client] = 0;
-	ga_iBetAmmount[client] = 0;
+	ga_iBetAmount[client] = 0;
 	ga_iOldArena[client] = 0;
 }
 
@@ -273,7 +273,7 @@ public void OnClientDisconnect(int client)
 	ga_bChallengePref[client] = true;
 	ga_bIsInChallenge[client] = false;
 	ga_iCooldown[client] = 0;
-	ga_iBetAmmount[client] = 0;
+	ga_iBetAmount[client] = 0;
 	ga_iOldArena[client] = 0;
 }
 
@@ -288,20 +288,20 @@ public Action Event_PlayerDisconnect(Event hEvent, const char[] sName, bool bDon
 	else if (ga_bIsInChallenge[client])
 	{
 		partner = getClientParter(client);
-		int betAmmount = ga_iBetAmmount[partner];
+		int betAmount = ga_iBetAmount[partner];
 
 		ga_bIsInChallenge[client] = false;
 		ga_bIsInChallenge[partner] = false;
 		
-		if (g_bZephrusStore && betAmmount > 0)
+		if (g_bZephrusStore && betAmount > 0)
 		{
 			int credits;
-			Multi1v1_MessageToAll(" \x03%N\x01 has beaten \x03%N\x01 in a challenge over \x03%i\x01 credits!", partner, client, betAmmount);
+			Multi1v1_MessageToAll(" \x03%N\x01 has beaten \x03%N\x01 in a challenge over \x03%i\x01 credits!", partner, client, betAmount);
 			
 			credits = Store_GetClientCredits(client);
-			Store_SetClientCredits(client, credits - betAmmount);
+			Store_SetClientCredits(client, credits - betAmount);
 			credits = Store_GetClientCredits(partner);
-			Store_SetClientCredits(partner, credits + betAmmount);
+			Store_SetClientCredits(partner, credits + betAmount);
 		}
 		else
 		{
@@ -595,7 +595,7 @@ void OpenBetSelectionMenu(int client, int target)
 {
 	char sInfoBuffer[128], sTitle[128], sDisplayBuffer[128];
 	
-	Format(sTitle, sizeof(sTitle), "Select Credit Ammount To Bet!");
+	Format(sTitle, sizeof(sTitle), "Select Credit Amount To Bet!");
 	
 	Menu MainMenu = new Menu(CreditMenu_Callback, MenuAction_Select | MenuAction_End); 
 	MainMenu.SetTitle(sTitle); 
@@ -607,7 +607,7 @@ void OpenBetSelectionMenu(int client, int target)
 	{
 		Format(sInfoBuffer, sizeof(sInfoBuffer), "%i;%i", (i*gcv_iBetMultiplier.IntValue),GetClientUserId(target));
 		Format(sDisplayBuffer, sizeof(sDisplayBuffer), "%i Credits", (i*gcv_iBetMultiplier.IntValue));
-		MainMenu.AddItem(sInfoBuffer, sDisplayBuffer, (isValidBetAmmount(client, target, (i*gcv_iBetMultiplier.IntValue)))?ITEMDRAW_DEFAULT:ITEMDRAW_DISABLED);
+		MainMenu.AddItem(sInfoBuffer, sDisplayBuffer, (isValidBetAmount(client, target, (i*gcv_iBetMultiplier.IntValue)))?ITEMDRAW_DEFAULT:ITEMDRAW_DISABLED);
 	}
 	
 	DisplayMenu(MainMenu, client, 15); 
@@ -627,7 +627,7 @@ public int CreditMenu_Callback(Menu MainMenu, MenuAction action, int param1, int
 			int target = GetClientOfUserId(StringToInt(sTempArray[1]));
 			
 			
-			if (!isValidBetAmmount(param1, target, credits))
+			if (!isValidBetAmount(param1, target, credits))
 			{
 				OpenBetSelectionMenu(param1, target);
 				Multi1v1_Message(param1, "You or your target do not have sufficent credits!");
@@ -687,11 +687,11 @@ public int CreditMenu_Callback(Menu MainMenu, MenuAction action, int param1, int
 	}
 }
 
-void OpenRequestMenu(int reciever, int sender, int betAmmount) 
+void OpenRequestMenu(int reciever, int sender, int betAmount) 
 { 
-	if (betAmmount != 0)
+	if (betAmount != 0)
 	{
-		Multi1v1_MessageToAll("\x03%N\x01 has challenged \x03%N\x01 over \x03%i\x01 credits!", sender, reciever, betAmmount);
+		Multi1v1_MessageToAll("\x03%N\x01 has challenged \x03%N\x01 over \x03%i\x01 credits!", sender, reciever, betAmount);
 	}
 	else
 	{
@@ -711,10 +711,10 @@ void OpenRequestMenu(int reciever, int sender, int betAmmount)
 	MainMenu.AddItem("", "be placed into a private arena to face your challenger.", ITEMDRAW_DISABLED);
 	MainMenu.AddItem("", "", ITEMDRAW_DISABLED);
 	
-	Format(sInfoBuffer, sizeof(sInfoBuffer), "yes;%i;%i", GetClientUserId(sender), betAmmount);
+	Format(sInfoBuffer, sizeof(sInfoBuffer), "yes;%i;%i", GetClientUserId(sender), betAmount);
 	MainMenu.AddItem(sInfoBuffer, "Accept");
 	
-	Format(sInfoBuffer, sizeof(sInfoBuffer), "no;%i;%i", GetClientUserId(sender), betAmmount);
+	Format(sInfoBuffer, sizeof(sInfoBuffer), "no;%i;%i", GetClientUserId(sender), betAmount);
 	MainMenu.AddItem(sInfoBuffer, "Decline");
 	
 	DisplayMenu(MainMenu, reciever, 15); 
@@ -730,7 +730,7 @@ public int RequestMenu_CallBack(Menu MainMenu, MenuAction action, int param1, in
 			GetMenuItem(MainMenu, param2, sInfo, sizeof(sInfo));
 			ExplodeString(sInfo, ";", sTempArray, 3, sizeof(sTempArray[]));
 			int sender = GetClientOfUserId(StringToInt(sTempArray[1]));
-			int betAmmount = StringToInt(sTempArray[2]);
+			int betAmount = StringToInt(sTempArray[2]);
 			
 			if (StrEqual(sTempArray[0], "yes"))
 			{
@@ -779,8 +779,8 @@ public int RequestMenu_CallBack(Menu MainMenu, MenuAction action, int param1, in
 
 				placeInChallengeQueue(param1, sender);
 				
-				ga_iBetAmmount[param1] = betAmmount;
-				ga_iBetAmmount[sender] = betAmmount;
+				ga_iBetAmount[param1] = betAmount;
+				ga_iBetAmount[sender] = betAmount;
 				
 				Multi1v1_MessageToAll("\x03%N\x01 has accepted \x03%N\x01's challenge!", param1, sender);
 				Multi1v1_Message(param1, "\x04You\x01 will be placed into a challenge next round!");
@@ -809,31 +809,31 @@ public void Multi1v1_OnRoundWon(int winner, int loser)
 {
 	if (ga_bIsInChallenge[winner] && ga_bIsInChallenge[loser])
 	{
-		int betAmmount = ga_iBetAmmount[winner];
+		int betAmount = ga_iBetAmount[winner];
 		
-		if (betAmmount > 0)
+		if (betAmount > 0)
 		{
-			Multi1v1_MessageToAll(" \x03%N\x01 has beaten \x03%N\x01 in a challenge over \x03%i\x01 credits!", winner, loser, betAmmount);
+			Multi1v1_MessageToAll(" \x03%N\x01 has beaten \x03%N\x01 in a challenge over \x03%i\x01 credits!", winner, loser, betAmount);
 		}
 		else
 		{
 			Multi1v1_MessageToAll(" \x03%N\x01 has beaten \x03%N\x01 in a challenge!", winner, loser);
 		}
 		
-		if (g_bZephrusStore && betAmmount > 0)
+		if (g_bZephrusStore && betAmount > 0)
 		{
-			Store_SetClientCredits(loser, Store_GetClientCredits(loser) - betAmmount);
-			Store_SetClientCredits(winner, Store_GetClientCredits(winner) + betAmmount);
+			Store_SetClientCredits(loser, Store_GetClientCredits(loser) - betAmount);
+			Store_SetClientCredits(winner, Store_GetClientCredits(winner) + betAmount);
 		}
 		ga_bIsInChallenge[winner] = false;
-		ga_iBetAmmount[winner] = 0;
+		ga_iBetAmount[winner] = 0;
 		ga_iCooldown[winner] = gcv_iCooldown.IntValue + 1;
 		Multi1v1_UnblockMVPStars(winner);
 		Multi1v1_UnblockRatingChanges(winner);
 
 
 		ga_bIsInChallenge[loser] = false;
-		ga_iBetAmmount[loser] = 0;
+		ga_iBetAmount[loser] = 0;
 		ga_iCooldown[loser] = gcv_iCooldown.IntValue + 1;
 		Multi1v1_UnblockMVPStars(loser);
 		Multi1v1_UnblockRatingChanges(loser);
@@ -1066,14 +1066,14 @@ bool IsValidClient(int client, bool bAllowBots = false, bool bAllowDead = true)
 	return true;
 }
 
-bool isValidBetAmmount(int player1, int player2, int betAmmount)
+bool isValidBetAmount(int player1, int player2, int betAmount)
 {
 
-	if (Store_GetClientCredits(player1) < betAmmount)
+	if (Store_GetClientCredits(player1) < betAmount)
 	{
 		return false;
 	}
-	else if (Store_GetClientCredits(player2) < betAmmount)
+	else if (Store_GetClientCredits(player2) < betAmount)
 	{
 		return false;
 	}
