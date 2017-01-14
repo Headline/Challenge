@@ -57,7 +57,7 @@ bool g_bZephrusStore = false;
 /* Integers */
 int ga_iCooldown[MAXPLAYERS + 1] = {0, ...};
 int ga_iBetAmount[MAXPLAYERS + 1] = {0, ...};
-int ga_iOldArena[MAXPLAYERS + 1] = {0, ...};
+int ga_iOldArena[MAXPLAYERS + 1] = {-1, ...};
 int ga_iLastRequest[MAXPLAYERS + 1] = {0, ...};
 
 public Plugin myinfo =
@@ -256,7 +256,7 @@ public void OnClientConnected(int client)
 	ga_bIsInChallenge[client] = false;
 	ga_iCooldown[client] = 0;
 	ga_iBetAmount[client] = 0;
-	ga_iOldArena[client] = 0;
+	ga_iOldArena[client] = -1;
 }
 
 public void OnClientCookiesCached(int client)
@@ -270,11 +270,12 @@ public void OnClientCookiesCached(int client)
 public void OnClientDisconnect(int client)
 {
 	SaveCookies(client);
+	
 	ga_bChallengePref[client] = true;
 	ga_bIsInChallenge[client] = false;
 	ga_iCooldown[client] = 0;
 	ga_iBetAmount[client] = 0;
-	ga_iOldArena[client] = 0;
+	ga_iOldArena[client] = -1;
 }
 
 public Action Event_PlayerDisconnect(Event hEvent, const char[] sName, bool bDontBroadcast)
@@ -831,7 +832,6 @@ public void Multi1v1_OnRoundWon(int winner, int loser)
 		Multi1v1_UnblockMVPStars(winner);
 		Multi1v1_UnblockRatingChanges(winner);
 
-
 		ga_bIsInChallenge[loser] = false;
 		ga_iBetAmount[loser] = 0;
 		ga_iCooldown[loser] = gcv_iCooldown.IntValue + 1;
@@ -844,6 +844,7 @@ public void Multi1v1_OnRoundWon(int winner, int loser)
 	else
 	{
 		ga_iCooldown[winner]--;
+		
 		ga_iCooldown[loser]--;
 	}
 }
@@ -875,7 +876,6 @@ public void Multi1v1_OnPostArenaRankingsSet(ArrayList rankingQueue)
 		for (int i = 0; i < rankingQueue.Length; i++)
 		{			
 			client = rankingQueue.Get(i);
-			
 			if (wasLastRoundAChallenge(client)) // if they had a challenge last round
 			{		
 				if (ga_iOldArena[client] < rankingQueue.Length - 1) // if we should bother shifting people
@@ -886,7 +886,8 @@ public void Multi1v1_OnPostArenaRankingsSet(ArrayList rankingQueue)
 
 					rankingQueue.Set(ga_iOldArena[client], client); // set the client back where they were
 				}
-				ga_iOldArena[client] = 0;
+				
+				ga_iOldArena[client] = -1;
 			}
 		}
 	}
@@ -896,6 +897,7 @@ public void Multi1v1_OnPostArenaRankingsSet(ArrayList rankingQueue)
 	{
 		int remainder;
 
+		savePlayerArenas(rankingQueue); // save player's arenas who are in challenge queue
 		removeAllQueuedPlayers(rankingQueue); // remove all challenge queue players from main queue and save old arena
 
 		if ((rankingQueue.Length % 2) == 0) // if whats left is even
@@ -923,10 +925,10 @@ public void Multi1v1_OnPostArenaRankingsSet(ArrayList rankingQueue)
 	}
 }
 
-
+// DESCRIPTION: Determines if the last round for a client was a challenge
 bool wasLastRoundAChallenge(int client)
 {
-	if(ga_iCooldown[client] == gcv_iCooldown.IntValue)
+	if (ga_iOldArena[client] != -1)
 	{
 		return true;
 	}
@@ -946,6 +948,18 @@ void placeInChallengeQueue(int client1, int client2)
 	}
 }
 
+void savePlayerArenas(ArrayList array)
+{
+	for (int i = 0; i < array.Length; i++)
+	{
+		int client = array.Get(i);
+		if (challengeQueue.FindValue(client) != -1)
+		{
+			ga_iOldArena[client] = i;
+		}
+	}
+}
+
 // DESCRPTION: Removes ALL challengeQueue players from specified queue.
 void removeAllQueuedPlayers(ArrayList array)
 {
@@ -957,8 +971,6 @@ void removeAllQueuedPlayers(ArrayList array)
 		
 		while (index != -1)
 		{
-			ga_iOldArena[client] = index;
-
 			array.Erase(index);
 			
 			index = array.FindValue(client);
