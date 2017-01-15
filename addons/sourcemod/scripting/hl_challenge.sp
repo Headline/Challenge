@@ -28,7 +28,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION "1.1.1"
+#define PLUGIN_VERSION "1.1.2"
 //#define DEBUG
 
 /* Handles */
@@ -488,7 +488,7 @@ void OpenChallengeMenu(int client)
 	
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		if (IsValidClient(i, true) && i != client)
+		if (IsValidClient(i, false, true) && i != client)
 		{
 			count++;
 			Format(sDisplayBuffer, sizeof(sDisplayBuffer), "%N", i);
