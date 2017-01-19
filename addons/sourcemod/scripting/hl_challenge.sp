@@ -289,6 +289,10 @@ public Action Event_PlayerDisconnect(Event hEvent, const char[] sName, bool bDon
 	else if (ga_bIsInChallenge[client])
 	{
 		partner = getClientParter(client);
+		if (!IsValidClient(partner))
+		{
+			return;
+		}
 		int betAmount = ga_iBetAmount[partner];
 
 		ga_bIsInChallenge[client] = false;
