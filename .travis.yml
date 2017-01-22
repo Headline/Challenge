@@ -1,0 +1,43 @@
+# Use the new container-based infrastructure
+sudo: false
+
+# Install some apt packages needed for spcomp
+addons:
+    apt_packages:
+        - lib32stdc++6
+
+# Set the build environment
+env:
+    - SMVERSION=1.7 # Legacy
+    - SMVERSION=1.8 # Stable
+    - SMVERSION=1.9 # Unstable
+
+# And compile!
+install:
+    - wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
+    - tar -xzf $(cat sourcemod-latest-linux)
+before_script:
+    - cd addons/sourcemod/scripting/
+    - wget "https://raw.githubusercontent.com/Impact123/AutoExecConfig/development/autoexecconfig.inc" -O include/autoexecconfig.inc
+    - wget "https://raw.githubusercontent.com/dvarnai/store-plugin/master/addons/sourcemod/scripting/include/store.inc" -O include/store.inc
+
+
+    - chmod +x spcomp
+    - mkdir compiled compiled/freaks
+script: ./compile.sh hl_challenge.sp 
+
+deploy:
+    provider: releases
+    api_key:
+        secure: sr4VxFq4Km2B8sTVBZqq 
+    file:
+        - challenge/addons/sourcemod/plugins/hl_challenge.smx
+        - challenge/addons/sourcemod/scripting/hl_challenge.sp
+    skip_cleanup: true
+    on:
+        repo: Headline22/Challenge
+        tags: true
+
+# Notifications
+notifications:
+    email: false
