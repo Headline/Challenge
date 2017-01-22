@@ -1,4 +1,4 @@
-#[Multi-1v1] Challenge [![Build Status](https://travis-ci.org/Headline22/Challenge.svg?branch=master)](https://travis-ci.org/Headline22/Challenge)
+#[Multi-1v1] Challenge
 by Michael Flaherty (C) 2016
 
 ##About:
