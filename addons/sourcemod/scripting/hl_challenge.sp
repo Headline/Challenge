@@ -516,6 +516,10 @@ public int MainMenu_CallBack(Menu MainMenu, MenuAction action, int param1, int p
 	{
 		case MenuAction_Select:
 		{
+			if (!IsValidClient(param1))
+			{
+				return;
+			}
 			char sInfo[128];
 			GetMenuItem(MainMenu, param2, sInfo, sizeof(sInfo));
 			
@@ -731,6 +735,11 @@ public int RequestMenu_CallBack(Menu MainMenu, MenuAction action, int param1, in
 	{
 		case MenuAction_Select:
 		{
+			if (!IsValidClient(param1))
+			{
+				return;
+			}
+
 			char sInfo[128], sTempArray[3][128];
 			GetMenuItem(MainMenu, param2, sInfo, sizeof(sInfo));
 			ExplodeString(sInfo, ";", sTempArray, 3, sizeof(sTempArray[]));
