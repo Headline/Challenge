@@ -31,8 +31,11 @@ before_script:
 script: ./compile.sh hl_challenge.sp 
 
 before_deploy:
-- cd $TRAVIS_BUILD_DIR/build/package
-- zip -r hl_challenge.zip *
+    - cp -R compiled/* $TRAVIS_BUILD_DIR/addons/sourcemod/plugins/
+    - cd $TRAVIS_BUILD_DIR
+    - zip -r hl_challenge.zip addons/
+
+
 deploy:
   provider: releases
   api_key:

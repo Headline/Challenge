@@ -865,7 +865,6 @@ public void Multi1v1_OnRoundWon(int winner, int loser)
 public void Multi1v1_AfterPlayerSetup(int client)
 {
 	if (ga_bIsInChallenge[client])
-	{
 		Multi1v1_Message(client, "\x03You\x01 are now in your challenge!");
 		PrintCenterText(client, "<font size=\"24\"><font color='#00ff00'>You</font> are now in your challenge!");
 		CS_SetClientClanTag(client, "[CHALLENGE]");
