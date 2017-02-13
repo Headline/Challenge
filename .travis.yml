@@ -23,8 +23,8 @@ before_script:
 script: ./compile.sh hl_challenge.sp
 
 before_deploy:
-    - mkdir $TRAVIS_BUILD_DIR/addons/sourcemod/plugins/
-    - mkdir $TRAVIS_BUILD_DIR/addons/sourcemod/scripting/
+    - mkdir -p $TRAVIS_BUILD_DIR/addons/sourcemod/plugins/
+    - mkdir -p $TRAVIS_BUILD_DIR/addons/sourcemod/scripting/
     - cp -R compiled/* $TRAVIS_BUILD_DIR/addons/sourcemod/plugins/
     - cp -R hl_challenge.sp $TRAVIS_BUILD_DIR/addons/sourcemod/plugins/
     - cd $TRAVIS_BUILD_DIR
