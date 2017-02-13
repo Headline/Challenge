@@ -6,34 +6,31 @@ env:
     - SMVERSION=1.7
     - SMVERSION=1.8
     - SMVERSION=1.9
-install:
-    - mkdir build
-    - cd build
-    - wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
-    - tar -xzf $(cat sourcemod-latest-linux)
+	
 before_script:
-    - cp hl_challenge.sp build/addons/sourcemod/scripting/
-    - cp hl_challenge.inc build/addons/sourcemod/scripting/include
-    - cd build/addons/sourcemod/scripting/include
+    - mkdir build && cd build
+    - wget "http://www.sourcemod.net/latest.php?version=$SOURCEMOD&os=linux" -O sourcemod-$SOURCEMOD-linux.tar.gz
+    - tar -xzf sourcemod-$SOURCEMOD-linux.tar.gz
+    - cd addons/sourcemod/scripting/include
     - wget "https://raw.githubusercontent.com/Impact123/AutoExecConfig/development/autoexecconfig.inc"
     - wget "https://raw.githubusercontent.com/dvarnai/store-plugin/master/addons/sourcemod/scripting/include/store.inc"
     - wget "https://raw.githubusercontent.com/splewis/csgo-multi-1v1/master/scripting/include/multi1v1.inc"
     - cd ..
     - chmod +x spcomp
+    - cp -R $TRAVIS_BUILD_DIR/addons/sourcemod/scripting/* .
+
 script: ./compile.sh hl_challenge.sp
 
 before_deploy:
-    - mkdir $TRAVIS_BUILD_DIR/deploy
-    - cp hl_challenge.sp $TRAVIS_BUILD_DIR/deploy
-    - cp hl_challenge.smx $TRAVIS_BUILD_DIR/deploy
-    - cd $TRAVIS_BUILD_DIR/deploy
-    - zip -r hl_challenge.zip
+    - cp -R compiled/* $TRAVIS_BUILD_DIR/addons/sourcemod/plugins/
+    - cd $TRAVIS_BUILD_DIR
+    - tar -czf release.tar.gz addons/
 
 deploy:
     provider: releases
     api_key:
         secure: ogtrrx9T3+yf6I9LjAhRUBtE1w958V0d/fOK4y2He2zQRdg58F6/Sq8VJ9hA0imOBUdkyV9h3hjklm1SLU5NdL57+eyHPUjRr3YBt5CrRYvWwEzBKP+2DoNDG/HnmU89+aImQnrmAFqSfJ/zCrGh8zyPQdDE8YeLY+nXggmkFiejQq5e5QYKMPSElw9/Ybl+lkyBpgGJWPfFrULFYUTXK0lI8p518VF+oO4BXKQkSBLrGjUVQ0euX9BlZwMjz3lE1eeGucW3poxV1P/88v/FrkeOKwIOD2ycUKk+Oj940ly4WU7ONsJXo625dmstL7nXa10vodAe6ycNie/b5u6Wp1Sw51ar9SLcSj2qvlbBX0fuMaBPTlH8a6ovQT4WQgnb+arzOYThpUzSKX01uR4hZMOghGNoQ6sR3tIgSMjDv8eBccR8s+OnWL7b2ySncPkLeUNkt6PlPNylyBY/u+IGconegCQhkmDodac2P9mg/3ktgKgVkPWinWgP19LFIqOI5Fo7CM0S+ujmKMDLZZAtmgeE/EMOk5eO00pTmAvEEoInME4lrWzPQTsrT01SuTkJxSg2GCvLz0tFkG/kmCA8xDeslaRpPKBejSuXhIh4WlgbNSfLKvrNK+vs7grsPAL/KMgEcklJwal9Yw36GfbE2zeO2JWhm4jRDmJsenf5wIo=
-    file: hl_challenge.zip
+    file: release.tar.gz
     on:
         repo: Headline22/Challenge
         tags: true
