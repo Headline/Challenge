@@ -876,7 +876,7 @@ public void Multi1v1_AfterPlayerSetup(int client)
 		{
 			Multi1v1_BlockMVPStars(client);
 			Multi1v1_BlockRatingChanges(client);
-		}
+		} 
 	}
 }
 
