@@ -26,6 +26,7 @@ before_deploy:
     - mkdir -p $TRAVIS_BUILD_DIR/deploy
     - cp -R compiled/* $TRAVIS_BUILD_DIR/deploy
     - cp -R hl_challenge.sp $TRAVIS_BUILD_DIR/deploy
+    - cp -R include/hl_challenge.inc $TRAVIS_BUILD_DIR/deploy
     - cd $TRAVIS_BUILD_DIR/deploy
     - zip -r hl_challenge.zip .
 
