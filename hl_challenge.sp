@@ -880,8 +880,9 @@ public void Multi1v1_AfterPlayerSetup(int client)
 	}
 }
 
-public void Multi1v1_OnPostArenaRankingsSet(ArrayList rankingQueue)
+public void Multi1v1_OnPostArenaRankingsSet(Handle rankingQueue2)
 {
+	ArrayList rankingQueue = view_as<ArrayList>(rankingQueue2);
 	/* Handle Non-Challenge People */
 	if (gcv_bSaveOldArena.BoolValue)
 	{
