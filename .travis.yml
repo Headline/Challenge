@@ -11,6 +11,8 @@ env:
     - SMVERSION=1.7 # Legacy
     - SMVERSION=1.8 # Stable
     - SMVERSION=1.9 # Unstable
+    global:
+        - secure: U82o2eDryuaENDuQ6a9wYbSqQHgqmU4yEJlGXdkBxML/ENQ8OUNTXHy47em83PZB/83A3deUjqxjZIv75nj6EfND0h0k3c/j81r8PwUs7Cghvw5+ljtefSHz7pWJ5Zc6hGEWcxj6xCs0zXjP595XJDj8AWbOw+Hf2CDqOlk/4FJ6eR6nKB3HZzdNQDh5uFl5aJ4gVpgiU+tHYcFMuHqlKM/qopcy1nwUtj3SaT6LQ6ZEdjM4fYl4bVVZhUMJ1Gqb2vQXFLdGNYolQ2c8CruBcnOBkr+4/9DOcXC69LVq3F6uofnVLYiUuUGo1YNoUKdvnFyrSnA3V/M5wGKI5DwFf4Q/R8EB93cTnusmjQskRALnVsIwZmRx8EBTa6jeVu0Uc8z0MOYr2BT48+AfTO5niYei6xxaJPAcTt3eA2iDomN/iZi3JPDPmfurn1usKQllWQ2WZ3z+elyIQFJWbNSFtq/0+f+0BIycX+moJ6hSSWNynF1tEgR7IAjr4gRw3Qfx8BBYzZz3uNFaLpwEcHwJs3E34wVjLrKcYqGYk2fIsO6e7zkT0z7myTBiS4TBaKCPnMLgSnOMWCmBnAScHkJ9AZHh79oZIGdmjVuaPTeCrSvS30+0FN7A4xgU+vDuYNRpVMOssX69Fi60YI6TL4qjycdAdMh+q3hG2FC6o3d5FhE=
 
 # And compile!
 install:
@@ -39,10 +41,9 @@ before_deploy:
 deploy:
   provider: releases
   api_key:
-      secure: "U82o2eDryuaENDuQ6a9wYbSqQHgqmU4yEJlGXdkBxML/ENQ8OUNTXHy47em83PZB/83A3deUjqxjZIv75nj6EfND0h0k3c/j81r8PwUs7Cghvw5+ljtefSHz7pWJ5Zc6hGEWcxj6xCs0zXjP595XJDj8AWbOw+Hf2CDqOlk/4FJ6eR6nKB3HZzdNQDh5uFl5aJ4gVpgiU+tHYcFMuHqlKM/qopcy1nwUtj3SaT6LQ6ZEdjM4fYl4bVVZhUMJ1Gqb2vQXFLdGNYolQ2c8CruBcnOBkr+4/9DOcXC69LVq3F6uofnVLYiUuUGo1YNoUKdvnFyrSnA3V/M5wGKI5DwFf4Q/R8EB93cTnusmjQskRALnVsIwZmRx8EBTa6jeVu0Uc8z0MOYr2BT48+AfTO5niYei6xxaJPAcTt3eA2iDomN/iZi3JPDPmfurn1usKQllWQ2WZ3z+elyIQFJWbNSFtq/0+f+0BIycX+moJ6hSSWNynF1tEgR7IAjr4gRw3Qfx8BBYzZz3uNFaLpwEcHwJs3E34wVjLrKcYqGYk2fIsO6e7zkT0z7myTBiS4TBaKCPnMLgSnOMWCmBnAScHkJ9AZHh79oZIGdmjVuaPTeCrSvS30+0FN7A4xgU+vDuYNRpVMOssX69Fi60YI6TL4qjycdAdMh+q3hG2FC6o3d5FhE="
+      secure: MY_SECRET_ENV
   file: hl_challenge.zip
   skip_cleanup: true
   on:
-    repo: Headline22/Challenge
     tags: true
-    all_branches: true
+    condition: $SOURCEMOD = 1.7
