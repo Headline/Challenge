@@ -1,21 +1,11 @@
-# Use the new container-based infrastructure
 sudo: false
-
-# Install some apt packages needed for spcomp
 addons:
     apt_packages:
         - lib32stdc++6
-
-# Set the build environment
 env:
-    global:
-        - secure: JUNQHC6mafptpSpQqsQJNqhqg4hLfgrBEZFXRmPePXKSqcaoC4NnH7Fx1vGDQANHIgAspNDAhmbs7HY4bP43zJ24c+XuObpDn3TZmIHM0/yKZ/04vDdZIR09dk1qXt4zlTakT2jfuSm1YbCU5UI5NDKJryksY9eiK1VC/X9Ji+Ha2CJyj+I00jTYNfuqmu9BIFyvl26sMocfj3GEv9YIH77u+YXiCW4UDGKkb54LwznfUvqNdAa11visEQr9uK1uB9iwIo8lcfM6qEOMAmk84PvP2uOcCtUG92ryV+w+pege90xtlX4wy94N5xbx7kiEkfLMZpVolVv2HAkL4cmnAjEpv8orJYt8sc88Y2dilfrOnQqYEtI0kJvNsrwdYudPmmMLSxcHw6nWfBJ23k159dn3qeHuJQ1mCB/2ahEkZJsgqVt+9lwbFT2UU8tOqYOoaG8oC2dkYa0ZuNgcqbXZmUKfENizmf7kI8SzhBryoYA61G2YZ0HmwN4XROIcXpiNxIDFcKyxC/xzMmTm69xLSrmUmP1uaJdgY405pe8CyJVniaExx54LM8j0t/l48xI5EjkX9IpEVjHoa2OI8S2ph/LXtYNOgH0vV/4F6dUWZcyPZs2CQCA5eS3Gi0t67POdhgx8f374/G0RxlmLa4PcQh3+9nEDMj9EKpH7GO4/By0=
-    - SMVERSION=1.7 # Legacy
-    - SMVERSION=1.8 # Stable
-    - SMVERSION=1.9 # Unstable
-	
-
-# And compile!
+    - SMVERSION=1.7
+    - SMVERSION=1.8
+    - SMVERSION=1.9
 install:
     - wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
     - tar -xzf $(cat sourcemod-latest-linux)
@@ -27,24 +17,19 @@ before_script:
     - wget "https://raw.githubusercontent.com/dvarnai/store-plugin/master/addons/sourcemod/scripting/include/store.inc"
     - wget "https://raw.githubusercontent.com/splewis/csgo-multi-1v1/master/scripting/include/multi1v1.inc"
     - cd ..
-
-
     - chmod +x spcomp
     - mkdir compiled compiled/freaks
-script: ./compile.sh hl_challenge.sp 
+script: "./compile.sh hl_challenge.sp"
 
 before_deploy:
     - cp -R compiled/* $TRAVIS_BUILD_DIR/addons/sourcemod/plugins/
     - cd $TRAVIS_BUILD_DIR
     - zip -r hl_challenge.zip addons/
 
-
 deploy:
-  provider: releases
-  api_key:
-      secure: MY_SECRET_ENV
-  file: hl_challenge.zip
-  skip_cleanup: true
-  on:
-    tags: true
-    condition: $SOURCEMOD = 1.7
+    provider: releases
+    api_key:
+        secure: ogtrrx9T3+yf6I9LjAhRUBtE1w958V0d/fOK4y2He2zQRdg58F6/Sq8VJ9hA0imOBUdkyV9h3hjklm1SLU5NdL57+eyHPUjRr3YBt5CrRYvWwEzBKP+2DoNDG/HnmU89+aImQnrmAFqSfJ/zCrGh8zyPQdDE8YeLY+nXggmkFiejQq5e5QYKMPSElw9/Ybl+lkyBpgGJWPfFrULFYUTXK0lI8p518VF+oO4BXKQkSBLrGjUVQ0euX9BlZwMjz3lE1eeGucW3poxV1P/88v/FrkeOKwIOD2ycUKk+Oj940ly4WU7ONsJXo625dmstL7nXa10vodAe6ycNie/b5u6Wp1Sw51ar9SLcSj2qvlbBX0fuMaBPTlH8a6ovQT4WQgnb+arzOYThpUzSKX01uR4hZMOghGNoQ6sR3tIgSMjDv8eBccR8s+OnWL7b2ySncPkLeUNkt6PlPNylyBY/u+IGconegCQhkmDodac2P9mg/3ktgKgVkPWinWgP19LFIqOI5Fo7CM0S+ujmKMDLZZAtmgeE/EMOk5eO00pTmAvEEoInME4lrWzPQTsrT01SuTkJxSg2GCvLz0tFkG/kmCA8xDeslaRpPKBejSuXhIh4WlgbNSfLKvrNK+vs7grsPAL/KMgEcklJwal9Yw36GfbE2zeO2JWhm4jRDmJsenf5wIo=
+    file: hl_challenge.zip
+    on:
+        repo: Headline22/Challenge
