@@ -17,12 +17,14 @@ before_script:
     - wget "https://raw.githubusercontent.com/splewis/csgo-multi-1v1/master/scripting/include/multi1v1.inc"
     - cd ..
     - chmod +x spcomp
-    - cp -R $TRAVIS_BUILD_DIR/build/addons/sourcemod/scripting/* .
 
 script: ./compile.sh hl_challenge.sp
 
 before_deploy:
+    - mkdir $TRAVIS_BUILD_DIR/addons/sourcemod/plugins/
+    - mkdir $TRAVIS_BUILD_DIR/addons/sourcemod/scripting/
     - cp -R compiled/* $TRAVIS_BUILD_DIR/addons/sourcemod/plugins/
+    - cp -R hl_challenge.sp $TRAVIS_BUILD_DIR/addons/sourcemod/plugins/
     - cd $TRAVIS_BUILD_DIR
     - tar -czf release.tar.gz addons/
 
