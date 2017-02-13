@@ -33,3 +33,4 @@ deploy:
     file: hl_challenge.zip
     on:
         repo: Headline22/Challenge
+        tags: true
