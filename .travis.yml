@@ -6,12 +6,10 @@ env:
     - SMVERSION=1.7
     - SMVERSION=1.8
     - SMVERSION=1.9
-install:
-    - wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
-    - tar -xzf $(cat sourcemod-latest-linux)
 before_script:
-    - cp hl_challenge.sp addons/sourcemod/scripting/
-    - cp hl_challenge.inc addons/sourcemod/scripting/include
+    - mkdir build && cd build
+    - wget "http://www.sourcemod.net/latest.php?version=$SMVERSION&os=linux" -O sourcemod-$SMVERSION-linux.tar.gz
+    - tar -xzf sourcemod-$SMVERSION-linux.tar.gz
     - cd addons/sourcemod/scripting/include
     - wget "https://raw.githubusercontent.com/Impact123/AutoExecConfig/development/autoexecconfig.inc"
     - wget "https://raw.githubusercontent.com/dvarnai/store-plugin/master/addons/sourcemod/scripting/include/store.inc"
@@ -19,7 +17,7 @@ before_script:
     - cd ..
     - chmod +x spcomp
     - cp -R $TRAVIS_BUILD_DIR/addons/sourcemod/scripting/* .
-script: "./compile.sh hl_challenge.sp"
+script: ./compile.sh hl_challenge.sp
 
 before_deploy:
     - cp -R compiled/* $TRAVIS_BUILD_DIR/addons/sourcemod/plugins/
