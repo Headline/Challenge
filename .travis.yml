@@ -23,7 +23,7 @@ before_script:
 script: ./compile.sh hl_challenge.sp
 
 before_deploy:
-    - mkdir deploy
+    - mkdir $TRAVIS_BUILD_DIR/deploy
     - cp hl_challenge.sp $TRAVIS_BUILD_DIR/deploy
     - cp hl_challenge.smx $TRAVIS_BUILD_DIR/deploy
     - cd $TRAVIS_BUILD_DIR/deploy
