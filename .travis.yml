@@ -1,40 +1,27 @@
-language: c
+# Use the new container-based infrastructure
+sudo: false
 
+# Install some apt packages needed for spcomp
+addons:
+    apt_packages:
+        - lib32stdc++6
+
+# Set the build environment
 env:
-    - SMVERSION=1.6
-    - SMVERSION=1.7
-    - SMVERSION=1.8
+    - SMVERSION=1.7 # Legacy
+    - SMVERSION=1.8 # Stable
+    - SMVERSION=1.9 # Unstable
 
-matrix:
-    fast_finish: true
-    allow_failures:
-        - env: SMVERSION=1.8
-    
-before_install:
-    - sudo apt-get update
-    - sudo apt-get install gcc-multilib
-    - sudo apt-get install lynx
-    - sudo apt-get install lib32stdc++6
-
+# And compile!
+install:
+    - wget --input-file=http://sourcemod.net/smdrop/$SMVERSION/sourcemod-latest-linux
+    - tar -xzf $(cat sourcemod-latest-linux)
 before_script:
-    - SMPATTERN="http:.*sourcemod-.*-linux.*"
-    - SMURL="http://www.sourcemod.net/smdrop/$SMVERSION/"
-    - SMPACKAGE="http://sourcemod.net/latest.php?os=linux&version=${SMVERSION}"
-    - wget $SMPACKAGE
-    - tar xfz $(basename $SMPACKAGE)
     - cd addons/sourcemod/scripting/
-    - chmod +x spcomp
-    - cp hl_challenge.sp addons/sourcemod/scripting/
-    - cp hl_challenge.inc addons/sourcemod/scripting/include
-    - cd addons/sourcemod/scripting/include
-    - wget https://raw.githubusercontent.com/Impact123/AutoExecConfig/development/autoexecconfig.inc
-    - wget https://raw.githubusercontent.com/dvarnai/store-plugin/master/addons/sourcemod/scripting/include/string.inc
-    - cd addons/sourcemod/scripting/
-    - chmod +x spcomp
-    - chmod +x compile.sh
+    - wget "https://raw.githubusercontent.com/Impact123/AutoExecConfig/development/autoexecconfig.inc" -O include/autoexecconfig.inc
+    - wget "https://raw.githubusercontent.com/dvarnai/store-plugin/master/addons/sourcemod/scripting/include/store.inc" -O include/store.inc
 
-script: 
-    - ./compile.sh
 
-after_script:
-    - ls ../plugin
+    - chmod +x spcomp
+    - mkdir compiled compiled/freaks
+script: ./compile.sh hl_challenge.sp 
