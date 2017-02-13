@@ -24,8 +24,9 @@ script: ./compile.sh hl_challenge.sp
 
 before_deploy:
     - mkdir deploy
-    - cp build/addons/sourcemod/scripting/hl_challenge.sp deploy/hl_challenge.sp
-    - cp build/addons/sourcemod/plugins/hl_challenge.smx deploy/hl_challenge.smx
+    - cp hl_challenge.sp $TRAVIS_BUILD_DIR/deploy
+    - cp hl_challenge.smx $TRAVIS_BUILD_DIR/deploy
+    - cd $TRAVIS_BUILD_DIR/deploy
     - zip -r hl_challenge.zip
 
 deploy:
