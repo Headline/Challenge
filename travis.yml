@@ -1,0 +1,38 @@
+language: c
+
+env:
+    - SMVERSION=1.6
+    - SMVERSION=1.7
+    - SMVERSION=1.8
+
+matrix:
+    fast_finish: true
+    allow_failures:
+        - env: SMVERSION=1.8
+    
+before_install:
+    - sudo apt-get update
+    - sudo apt-get install gcc-multilib
+    - sudo apt-get install lynx
+    - sudo apt-get install lib32stdc++6
+
+before_script:
+    - SMPATTERN="http:.*sourcemod-.*-linux.*"
+    - SMURL="http://www.sourcemod.net/smdrop/$SMVERSION/"
+    - SMPACKAGE=`lynx -dump "$SMURL" | egrep -o "$SMPATTERN" | tail -1`
+    - wget $SMPACKAGE
+    - tar -xzf $(basename "$SMPACKAGE")
+    - cp hl_challenge.sp addons/sourcemod/scripting/
+    - cp hl_challenge.inc addons/sourcemod/scripting/include
+    - cd addons/sourcemod/scripting/include
+    - wget https://raw.githubusercontent.com/Impact123/AutoExecConfig/development/autoexecconfig.inc
+    - wget https://raw.githubusercontent.com/dvarnai/store-plugin/master/addons/sourcemod/scripting/include/string.inc
+    - cd addons/sourcemod/scripting/
+    - chmod +x spcomp
+    - chmod +x compile.sh
+
+script: 
+    - ./compile.sh
+
+after_script:
+    - ls ../plugin
