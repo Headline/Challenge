@@ -21,7 +21,7 @@ before_script:
     - SMURL="http://www.sourcemod.net/smdrop/$SMVERSION/"
     - SMPACKAGE=`lynx -dump "$SMURL" | egrep -o "$SMPATTERN" | tail -1`
     - wget $SMPACKAGE
-    - tar -xzf $(basename "$SMPACKAGE")
+    - tar -xzf -d $(basename "$SMPACKAGE")
     - cp hl_challenge.sp addons/sourcemod/scripting/
     - cp hl_challenge.inc addons/sourcemod/scripting/include
     - cd addons/sourcemod/scripting/include
