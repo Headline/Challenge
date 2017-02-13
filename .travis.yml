@@ -9,8 +9,8 @@ env:
 	
 before_script:
     - mkdir build && cd build
-    - wget "http://www.sourcemod.net/latest.php?version=$SOURCEMOD&os=linux" -O sourcemod-$SOURCEMOD-linux.tar.gz
-    - tar -xzf sourcemod-$SOURCEMOD-linux.tar.gz
+    - wget "http://www.sourcemod.net/latest.php?version=$SMVERSION&os=linux" -O sourcemod-$SMVERSION-linux.tar.gz
+    - tar -xzf sourcemod-$SMVERSION-linux.tar.gz
     - cd addons/sourcemod/scripting/include
     - wget "https://raw.githubusercontent.com/Impact123/AutoExecConfig/development/autoexecconfig.inc"
     - wget "https://raw.githubusercontent.com/dvarnai/store-plugin/master/addons/sourcemod/scripting/include/store.inc"
