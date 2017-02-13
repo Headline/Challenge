@@ -18,6 +18,7 @@ install:
     - tar -xzf $(cat sourcemod-latest-linux)
 before_script:
     - cp hl_challenge.sp addons/sourcemod/scripting/
+    - cp hl_challenge.inc addons/sourcemod/scripting/include
     - cd addons/sourcemod/scripting/
     - wget "https://raw.githubusercontent.com/Impact123/AutoExecConfig/development/autoexecconfig.inc" -O include/autoexecconfig.inc
     - wget "https://raw.githubusercontent.com/dvarnai/store-plugin/master/addons/sourcemod/scripting/include/store.inc" -O include/store.inc
