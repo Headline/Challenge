@@ -18,7 +18,6 @@ before_script:
     - wget "https://raw.githubusercontent.com/splewis/csgo-multi-1v1/master/scripting/include/multi1v1.inc"
     - cd ..
     - chmod +x spcomp
-    - mkdir compiled compiled/freaks
 script: "./compile.sh hl_challenge.sp"
 
 before_deploy:
