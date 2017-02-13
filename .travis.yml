@@ -23,7 +23,7 @@ before_script:
     - wget "https://raw.githubusercontent.com/Impact123/AutoExecConfig/development/autoexecconfig.inc"
     - wget "https://raw.githubusercontent.com/dvarnai/store-plugin/master/addons/sourcemod/scripting/include/store.inc"
     - wget "https://raw.githubusercontent.com/splewis/csgo-multi-1v1/master/scripting/include/multi1v1.inc"
-    - cd addons/sourcemod/scripting/
+    - cd ..
 
 
     - chmod +x spcomp
