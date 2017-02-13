@@ -19,9 +19,11 @@ before_install:
 before_script:
     - SMPATTERN="http:.*sourcemod-.*-linux.*"
     - SMURL="http://www.sourcemod.net/smdrop/$SMVERSION/"
-    - SMPACKAGE=`lynx -dump "$SMURL" | egrep -o "$SMPATTERN" | tail -1`
+    - SMPACKAGE="http://sourcemod.net/latest.php?os=linux&version=${SMVERSION}"
     - wget $SMPACKAGE
-    - tar -xzf -d $(basename "$SMPACKAGE")
+    - tar xfz $(basename $SMPACKAGE)
+    - cd addons/sourcemod/scripting/
+    - chmod +x spcomp
     - cp hl_challenge.sp addons/sourcemod/scripting/
     - cp hl_challenge.inc addons/sourcemod/scripting/include
     - cd addons/sourcemod/scripting/include
