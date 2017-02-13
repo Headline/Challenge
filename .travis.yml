@@ -19,9 +19,11 @@ install:
 before_script:
     - cp hl_challenge.sp addons/sourcemod/scripting/
     - cp hl_challenge.inc addons/sourcemod/scripting/include
-    - cd addons/sourcemod/scripting/
-    - wget "https://raw.githubusercontent.com/Impact123/AutoExecConfig/development/autoexecconfig.inc" -O include/autoexecconfig.inc
-    - wget "https://raw.githubusercontent.com/dvarnai/store-plugin/master/addons/sourcemod/scripting/include/store.inc" -O include/store.inc
+    - cd addons/sourcemod/scripting/include
+    - wget "https://raw.githubusercontent.com/Impact123/AutoExecConfig/development/autoexecconfig.inc"
+    - wget "https://raw.githubusercontent.com/dvarnai/store-plugin/master/addons/sourcemod/scripting/include/store.inc"
+    - wget "https://raw.githubusercontent.com/splewis/csgo-multi-1v1/master/scripting/include/multi1v1.inc"
+    - cd addons/sourcemod/scripting
 
 
     - chmod +x spcomp
