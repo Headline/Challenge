@@ -807,7 +807,7 @@ public int RequestMenu_CallBack(Menu MainMenu, MenuAction action, int param1, in
 			}
 		}
 		case MenuAction_End: 		
-{
+		{
 			delete MainMenu;
 		}
 	}
