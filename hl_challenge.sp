@@ -806,8 +806,8 @@ public int RequestMenu_CallBack(Menu MainMenu, MenuAction action, int param1, in
 				Multi1v1_Message(sender, "\x03%N \x01has denied \x04your\x01 request!", param1);
 			}
 		}
-		case MenuAction_End:
-		{
+		case MenuAction_End: 		
+{
 			delete MainMenu;
 		}
 	}
