@@ -1,6 +1,8 @@
 #[Multi-1v1] Challenge
-by Michael Flaherty (C) 2016 
+by Michael Flaherty (C) 2016
+
 [![Build Status](https://travis-ci.org/Headline22/Challenge.svg?branch=master)](https://travis-ci.org/Headline22/Challenge)
+
 ##About:
 This plugin is an extension to splewis's Multi-1v1 arenas plugin linked below. This plugin
 allows players who are in game to challenge their friends and get paired together in order to battle
