@@ -28,7 +28,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION "1.1.4"
+#define PLUGIN_VERSION "1.1.5"
 //#define DEBUG
 
 /* Handles */
@@ -524,6 +524,10 @@ public int MainMenu_CallBack(Menu MainMenu, MenuAction action, int param1, int p
 			GetMenuItem(MainMenu, param2, sInfo, sizeof(sInfo));
 			
 			int target = GetClientOfUserId(StringToInt(sInfo));
+			if (!IsValidClient(target))
+			{
+				return;
+			}
 			
 			if (ga_bIsInChallenge[target])
 			{
@@ -633,8 +637,12 @@ public int CreditMenu_Callback(Menu MainMenu, MenuAction action, int param1, int
 			GetMenuItem(MainMenu, param2, sInfo, sizeof(sInfo));
 			ExplodeString(sInfo, ";", sTempArray, 2, sizeof(sTempArray[]));
 			int credits = StringToInt(sTempArray[0]);
-			int target = GetClientOfUserId(StringToInt(sTempArray[1]));
 			
+			int target = GetClientOfUserId(StringToInt(sTempArray[1]));
+			if (!IsValidClient(target))
+			{
+				return;
+			}
 			
 			if (!isValidBetAmount(param1, target, credits))
 			{
@@ -715,9 +723,10 @@ void OpenRequestMenu(int reciever, int sender, int betAmount)
 	
 	Menu MainMenu = new Menu(RequestMenu_CallBack, MenuAction_Select | MenuAction_End); 
 	MainMenu.SetTitle(sTitle); 
-
-	MainMenu.AddItem("", "By Accepting this challenge, you agree that you will ", ITEMDRAW_DISABLED);
-	MainMenu.AddItem("", "be placed into a private arena to face your challenger.", ITEMDRAW_DISABLED);
+	
+	MainMenu.AddItem("", "By accepting this challenge,", ITEMDRAW_DISABLED);
+	MainMenu.AddItem("", "you will be placed into an", ITEMDRAW_DISABLED);
+	MainMenu.AddItem("", "arena to face your challenger.", ITEMDRAW_DISABLED);
 	MainMenu.AddItem("", "", ITEMDRAW_DISABLED);
 	
 	Format(sInfoBuffer, sizeof(sInfoBuffer), "yes;%i;%i", GetClientUserId(sender), betAmount);
