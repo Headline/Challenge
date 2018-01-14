@@ -77,7 +77,7 @@ forward void hl_onChallengeWon(int winner, int loser)
 
  public SharedPlugin __pl_hl_challenge  =
 {
-	name = "[Multi-1v1] Challenge",
+	name = "hl_challenge",
 	file = "hl_challenge.smx",
 #if defined REQUIRE_PLUGIN
 	required = 1
