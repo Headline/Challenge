@@ -36,5 +36,5 @@ deploy:
         secure: ogtrrx9T3+yf6I9LjAhRUBtE1w958V0d/fOK4y2He2zQRdg58F6/Sq8VJ9hA0imOBUdkyV9h3hjklm1SLU5NdL57+eyHPUjRr3YBt5CrRYvWwEzBKP+2DoNDG/HnmU89+aImQnrmAFqSfJ/zCrGh8zyPQdDE8YeLY+nXggmkFiejQq5e5QYKMPSElw9/Ybl+lkyBpgGJWPfFrULFYUTXK0lI8p518VF+oO4BXKQkSBLrGjUVQ0euX9BlZwMjz3lE1eeGucW3poxV1P/88v/FrkeOKwIOD2ycUKk+Oj940ly4WU7ONsJXo625dmstL7nXa10vodAe6ycNie/b5u6Wp1Sw51ar9SLcSj2qvlbBX0fuMaBPTlH8a6ovQT4WQgnb+arzOYThpUzSKX01uR4hZMOghGNoQ6sR3tIgSMjDv8eBccR8s+OnWL7b2ySncPkLeUNkt6PlPNylyBY/u+IGconegCQhkmDodac2P9mg/3ktgKgVkPWinWgP19LFIqOI5Fo7CM0S+ujmKMDLZZAtmgeE/EMOk5eO00pTmAvEEoInME4lrWzPQTsrT01SuTkJxSg2GCvLz0tFkG/kmCA8xDeslaRpPKBejSuXhIh4WlgbNSfLKvrNK+vs7grsPAL/KMgEcklJwal9Yw36GfbE2zeO2JWhm4jRDmJsenf5wIo=
     file: hl_challenge.zip
     on:
-        repo: Headline22/Challenge
+        repo: Headline/Challenge
         tags: true
