@@ -1,7 +1,7 @@
 # [Multi-1v1] Challenge
 by Michael Flaherty (C) 2016
 
-[![Build Status](https://travis-ci.org/Headline/Challenge.svg?branch=master)](https://travis-ci.org/Headline22/Challenge)
+[![Build Status](https://travis-ci.org/Headline/Challenge.svg?branch=master)](https://travis-ci.org/Headline/Challenge)
 
 ## About:
 This plugin is an extension to splewis's Multi-1v1 arenas plugin linked below. This plugin
