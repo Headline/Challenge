@@ -1,0 +1,176 @@
+"Phrases"
+{
+    "Won With Credits"
+    {
+        "#format"	"{1:N},{2:N}, {3:i}"
+        "en"    "{purple}{1}{default} has beaten {purple}{2}{default} in a challenge over {purple}{3}{default} coins!"
+        "pt_p"  "{purple}{1}{default} ganhou a {purple}{2}{default} num desafio a valer {purple}{3}{default} moedas!"
+    }
+    "Won"
+    {
+        "#format"	"{1:N},{2:N}"
+        "en"    "{purple}{1}{default} has beaten {purple}{2}{default} in a challenge !"
+        "pt_p"  "{purple}{1}{default} ganhou a {purple}{2}{default} num desafio !"
+    }
+    "Challenges Enabled"
+    {
+        "en"    "Challenges: Enabled"
+        "pt_p"    "Desafios: Ativados"
+    }
+    "Challenges Disabled"
+    {
+        "en"    "Challenges: Disabled"
+        "pt_p"    "Desafios: Desativados"
+    }
+    "Sucessfully Disabled"
+    {
+        "en"    "You have successfully disabled challenges!"
+        "pt_p"    "Desativaste os desafios com sucesso!"
+    }
+    "Sucessfully Enabled"
+    {
+        "en"    "You have successfully enabled challenges!"
+        "pt_p"    "Ativaste os desafios com sucesso!"
+    }
+    "Must Be In Game"
+    {
+        "en"    "You must be in-game to use this command!"
+        "pt_p"    "Tens de estar a jogar para usar este comando!"
+    }
+    "Already in Challenge"
+    {
+        "en"    "You are already in a challenge!"
+        "pt_p"    "Já estás num desafio!"
+    }
+    "They Already in Challenge"
+    {
+        "en"    "They are already in a challenge!"
+        "pt_p"    "Eles já estão num desafio"
+    }
+    "Already in Queue"
+    {
+        "en"    "You are already in a queue for a challenge!"
+        "pt_p"    "Já estás na fila para um desafio!"
+    }
+    "They Already in Queue"
+    {
+        "en"    "They are already in a queue for a challenge!"
+        "pt_p"    "Eles já estão na fila para um desafio!"
+    }
+    "Must Wait Rounds"
+    {
+        "#format"   "{1:i}"
+        "en"    "You must wait {1} more rounds to challenge again!"
+        "pt_p"    "Tens de esperar mais {1} rondas para fazeres outro desafio!"
+    }
+    "They Must Wait Rounds"
+    {
+        "#format"   "{1:i}"
+        "en"    "They must wait {1} more rounds to challenge again!"
+        "pt_p"    "Eles têm de esperar mais {1} rondas para fazeres outro desafio!"
+    }
+    "Plugin Disabled"
+    {
+        "en"    "This plugin is currently disabled!"
+        "pt_p"    "Este plugin está atualmente desativado!"
+    }
+    "Must Wait Seconds"
+    {
+        "#format"   "{1:i}"
+        "en"    "You must wait {1} more seconds to challenge again!"
+        "pt_p"    "Tens de esperar mais {1} segundos para fazeres outro desafio!"
+    }
+    "First Enable Challenges"
+    {
+        "en"    "You must first enable challenges in the guns menu!"
+        "pt_p"    "Primeiro tens de ativar os desafios no menu de armas!"
+    }
+    "They First Enable Challenges"
+    {
+        "en"    "They must first enable challenges in the guns menu!"
+        "pt_p"    "Primeiro eles têm de ativar os desafios no menu de armas!"
+    }
+    "Can't Challenge as Spectator"
+    {
+        "en"    "You may not challenge as a spectator!"
+        "pt_p"    "Não podes fazer desafios como espectador!"
+    }
+    "They Can't Challenge as Spectator"
+    {
+        "en"    "You may not challenge as a spectator!"
+        "pt_p"    "Eles não podem fazer desafios como espectador!"
+    }
+    "Can't target yourself"
+    {
+        "en"    "You cannot target yourself!"
+        "pt_p"    "Não podes desafiar-te a ti mesmo!"
+    }
+    "Usage"
+    {
+        "en"    "Usage: sm_challenge"
+        "pt_p"  "Uso: sm_desafio"
+    }
+    "Menu Title"
+    {
+        "en"    "Select a Player :"
+        "pt_p"  "Escolhe um jogador :"
+    }
+    "No Players"
+    {
+        "en"    "There are no players to challenge!"
+        "pt_p"  "Não há jogadores para desafiar!"
+    }
+    "Bet Menu Title"
+    {
+        "en"    "Select Credit Amount To Bet!"
+        "pt_p"  "Escolhe a tua aposta!"
+    }
+    "None"
+    {
+        "en"    "None"
+        "pt_p"  "Nenhum"
+    }
+    "Credits"
+    {
+        "en"    "Coins"
+        "pt_p"  "Moedas"
+    }
+    "Not Enough Credits"
+    {
+        "en"    "You or your target do not have sufficent coins!"
+        "pt_p"  "Tu ou o teu alvo não têm moedas suficientes!"
+    }
+    "Challenge With Credits"
+    {
+        "#format"	"{1:N},{2:N}, {3:i}"
+        "en"    "{purple}{1}{default} has challenged {purple}{2}{default} over {purple}{3}{default} coins!"
+        "pt_p"  "{purple}{1}{default} desafiou {purple}{2}{default} a valer {purple}{3}{default} moedas!"
+    }
+    "Challenge"
+    {
+        "#format"	"{1:N},{2:N}"
+        "en"    "{purple}{1}{default} has challenged {purple}{2}{default} !"
+        "pt_p"  "{purple}{1}{default} desafiou {purple}{2}{default} !"
+    }
+    "Challenged You"
+    {
+        "#format"	"{1:N}"
+        "en"    "{purple}{1}{default} has challenged you !"
+        "pt_p"  "{purple}{1}{default} desafiou-te !"
+    }
+    "Msg1"
+    {
+        "en"    "By accepting this challenge,"
+        "pt_p"  "Ao aceitares este desafio,"
+    }
+    "Msg2"
+    {
+        "en"    "you will be placed into an"
+        "pt_p"  "vais ser colocado numa arena"
+    }
+    "Msg3"
+    {
+        "en"    "arena to face your challenger."
+        "pt_p"  "para jogares o teu desafio."
+    }
+}
