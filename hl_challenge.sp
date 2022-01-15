@@ -210,8 +210,8 @@ public void OnPluginStart()
 	LoadTranslations("challenge.phrases.txt");
 	
 	/* Commands */
-	RegConsoleCmd("sm_challenge", Command_Challenge);
-	RegConsoleCmd("sm_chal", Command_Challenge);
+	RegConsoleCmd("sm_challenge", Command_Challenge, "Allows users to challenge their friends!);
+	RegConsoleCmd("sm_chal", Command_Challenge, "Allows users to challenge their friends!);
 	
 	/* Events */
 	HookEvent("player_disconnect", Event_PlayerDisconnect);
